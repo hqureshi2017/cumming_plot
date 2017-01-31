@@ -49,7 +49,8 @@ Examples
 
 **Generate fake data**
 
-``` import cumming_plot
+```
+import cumming_plot
 from random import randint
 start = [randint(1,4) for i in range(30)]
 end = [randint(2,7) for i in range(30)]
@@ -63,10 +64,12 @@ ax = fig.add_subplot(111)
 cumming_plot.paired(data, ax)
 plt.show()
 ```
+
 ![figure1](./figure_1.png)
 
 **Complex plot**
-```ab_errors = 'SD'
+```
+ab_errors = 'SD'
 yticks = [-10, 30, 10]
 style = {'a': ['r*', 'k'], 'b':['yo', 'g'], 'diff': ['w^', 'm']}
 ylabel = 'y label'
@@ -79,6 +82,7 @@ cumming_plot.paired(data, ax, ab_errors=ab_errors, yticks=yticks,
                   zero_line=zero_line, y2label=y2label,
                   y2ticks=y2ticks)
 ```
+
 ![figure2](./figure_2.png)
 
 **Plot Likert data**
@@ -90,10 +94,10 @@ ax = fig.add_subplot(1,1,1)
 cumming_plot.paired(data, ax, y2ticks=True, likert=True)
 plt.show()
 ```
+
 ![figure3](./figure_3.png)
 
 **Generate crazy example**
-
 ```
 style1 = {'a': ['bo', 'b'], 'b': ['ro', 'r'], 'diff': ['g^', 'g']}
 style2 = {'a': ['b8', 'm'], 'b': ['yd', 'r'], 'diff': ['cp', 'k']}
