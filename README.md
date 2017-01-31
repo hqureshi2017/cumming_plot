@@ -58,7 +58,8 @@ data = [start, end]
 ```
 
 **Simple plot**
-```import matplotlib.pyplot as plt
+```
+import matplotlib.pyplot as plt
 fig = plt.figure()
 ax = fig.add_subplot(111)
 cumming_plot.paired(data, ax)
@@ -86,7 +87,8 @@ cumming_plot.paired(data, ax, ab_errors=ab_errors, yticks=yticks,
 ![figure2](./figure_2.png)
 
 **Plot Likert data**
-```start = [randint(1,4) for i in range(30)]
+```
+start = [randint(1,4) for i in range(30)]
 end = [randint(2,7) for i in range(30)]
 data = [start, end]
 fig = plt.figure()
