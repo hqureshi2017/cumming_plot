@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 
 def _jitter(data, jit=None):
@@ -141,6 +142,12 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     > plt.show()
 
     """
+    # Set matplotlib options
+    mpl.rcParams['font.size'] = 16
+    mpl.rcParams['axes.labelsize'] = 16
+    mpl.rcParams['ytick.labelsize'] = 16
+    mpl.rcParams['xtick.labelsize'] = 16
+
     data[0] = pd.Series(data[0])
     data[1] = pd.Series(data[1])
 
@@ -328,16 +335,18 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
 def _usage():
     """Print usage on command line."""
 
-    print('Plot paired data and their difference based on the approach'
+    print('\nPlot paired data and their difference based on the approach '
           'promoted by Cumming and Calin-Jageman (2017). \n\n'
           'From the command line:\n'
-          '\t$ python cumming_plot.py data.txt <param>\n'
-          '\t\tdata.txt -> 2 columns of paired data to plot\n'
+          '\t Plot data from a file:\n'
+          '\t$ python cumming_plot.py <data> <param>\n'
+          '\t\t<data> -> 2 columns of paired data to plot\n'
           '\t\tparam -> optional, specify parameters to plot function; in '
           'quotation marks\n\n'
-          '\t#example: \n\t\tpython cumming_plot data.txt "zero_line=False, '
+          '\t$ python cumming_plot.py data.txt "zero_line=True,'
+          'y2ticks=True"\n\n'
+          '\tPlot series of examples: \n'
           '\t$ python cumming_plot.py examples\n'
-          '\t\t plot various examples\n'
           '\n\nFrom Python program:\n'
           '\timport cumming_plot\n'
           '\tfrom random import randint\n'
@@ -443,12 +452,12 @@ def _examples_paired():
         ab = [a, b]
 
         # Generate subplot
-        ax = fig.add_subplot(2, 4, subplot)
+        ax = fig.add_subplot(4, 2, subplot)
         paired(ab, ax, ab_errors=ab_errors, yticks=yticks,
                 style=style, ylabel=ylabel, xlabel=xlabel,
                 zero_line=zero_line, y2label=y2label,
                 y2ticks=y2ticks)
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.suptitle('Crazy example, close to finish.')
     plt.show()
 
