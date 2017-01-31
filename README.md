@@ -4,6 +4,14 @@ This Python module generates plots in the style recommended by Geoff Cumming and
 Please refer to [Understanding the New Statistics][1] and [Introduction to the New Statistics][2] for
 a more details.
 
+Version 1.0 [![DOI](https://zenodo.org/badge/80242479.svg)](https://zenodo.org/badge/latestdoi/80242479)
+
+Citation
+--
+If this code was used to prepare figures for publications, presentations, books, etc., please cite this code as:
+
+Héroux ME (2017). Cumming plot (paired data) for Python. DOI: 10.5281/zenodo.265186. 
+
 Description
 --
 The current version of the module includes the function `paired()` to 
