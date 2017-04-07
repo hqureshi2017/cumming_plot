@@ -66,7 +66,7 @@ def _jitter(data, jit=None):
 
 
 def paired(data, ax, ab_errors='95%CI', yticks='default',
-          dif_jit=None, ab_jit=None, style=None, ylabel=None,
+          jit=None, style=None, ylabel=None,
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
            axes_tick_width=None, marker_size=None, font_size=None, likert=False):
 
@@ -82,10 +82,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     yticks : list, default None
         When not specified, y-range and y-ticks will default to those selected by matplotlib. However, these can be be
         specified by provide a list containing [ymin, ymax, step_size]
-    dif_jit : int, default None
-        Size of the y-axis jitter for the raw difference data. Defaults to 0.001.
-    ab_jit : int, default None
-        Size of the y-axis jitter for the raw a and b data. Defaults to 0.005.
+    jit : int, default None
+        Size of the y-axis jitter for the raw a, b and diff data. Defaults to 0.005.
     style : dict, default None
         Set marker color and shape. Defaults to {'a': ['wo', 'k'], 'b': ['ko', 'k'],'diff': ['k^', 'k']}.
     ylabel : str, default None
@@ -149,10 +147,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     """
 
     # Verify default values
-    if ab_jit is None:
-        ab_jit = 0.005
-    if dif_jit is None:
-        dif_jit = 0.001
+    if jit is None:
+        jit = 0.005
     if style is None:
         style = {'a': ['wo', 'k'],
                  'b': ['ko', 'k'],
@@ -176,7 +172,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     data[1] = pd.Series(data[1])
 
     # Calculate jitter to add to raw data a and b
-    jitter_a, jitter_b = _jitter(data, ab_jit)
+    jitter_a, jitter_b = _jitter(data, jit)
 
     # Plot zero line across data a and b
     if zero_line:
@@ -244,12 +240,12 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     data_diff = [[], []]
     data_diff[0] = pd.Series(BA_dif)
     data_diff[1] = pd.Series(BA_dif)
-    jitter_diff, temp = _jitter(data, ab_jit)
+    jitter_diff, temp = _jitter(data, jit)
 
     # Plot raw data points for differences
     ones = np.ones(len(data_diff[0]))
     x_val_diff = ones * x_spacing[4] + jitter_diff
-    ax.plot(x_val_diff, data[0], style['diff'][0],
+    ax2.plot(x_val_diff, a_mean + data_diff[0], style['diff'][0],
             markeredgecolor=style['diff'][1], markersize=marker_size[0])
 
     # Calculate x-value where to plot mean [95% CI]
