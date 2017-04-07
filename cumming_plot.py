@@ -69,7 +69,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
           jit=None, style=None, ylabel=None,
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
           axes_tick_width=None, marker_size=None, markeredgewidth=None,
-          font_size=None, likert=False, linewidth=None):
+          font_size=None, likert=False, linewidth=None,
+           connectcolor=None):
 
     """
     Parameters
@@ -110,6 +111,9 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         Set to indicate that plotted data come from a 7-point Likert scale. This will insert appropriate y-tick labels.
     linewidth : int, default None
         Set width of error bar lines. Defaults to 1
+    connectcolor : str, default None
+        Set color of line connect raw data points from a and b. Defaults to light grey ('0.8')
+        
     Usage
     -----
     > # Generate fake data
@@ -168,7 +172,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         markeredgewidth = 1
     if linewidth is None:
         linewidth = 1
-
+    if connectcolor is None:
+        connectcolor = '0.8'
     # x-axis spacing [a, raw a, space, raw b, b]
     x_spacing = [0.05, 0.1, 0.3, 0.35, 0.45]
 
@@ -191,7 +196,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     # Plot lines connecting paired points
     for a, b, j_a, j_b in zip(data[0], data[1], jitter_a, jitter_b):
         x_val = [x_spacing[1] + j_a, x_spacing[2] - j_b]
-        ax.plot(x_val, [a, b], '-', color='0.75')
+        ax.plot(x_val, [a, b], '-', color=connectcolor)
 
     # Plot raw data points for a
     ones = np.ones(len(data[0]))
@@ -303,6 +308,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax2.spines['right'].set_color(style['diff'][2])
     ax.spines['right'].set_linewidth(axes_tick_width)
     ax2.spines['left'].set_linewidth(axes_tick_width)
+    ax2.spines['right'].set_linewidth(axes_tick_width)
     ax2.yaxis.label.set_color(style['diff'][2])
 
     # Set x-axis limits
@@ -383,7 +389,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         else:
             y_val = min_val - 2
         ax.text(x_spacing[0] - 0.01, y_val, xlabel[0], fontsize=font_size, va='top')
-        ax.text(x_spacing[2] - 0.01, y_val, xlabel[1], fontsize=font_size, va='top')
+        ax.text(x_spacing[2] - 0.02, y_val, xlabel[1], fontsize=font_size, va='top')
         ax.text(x_spacing[4] - 0.01, y_val, xlabel[2], fontsize=font_size, va='top')
 
 
