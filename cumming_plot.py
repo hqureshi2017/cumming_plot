@@ -69,7 +69,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
           jit=None, style=None, ylabel=None,
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
           axes_tick_width=None, marker_size=None, markeredgewidth=None,
-          font_size=None, likert=False):
+          font_size=None, likert=False, linewidth=None):
 
     """
     Parameters
@@ -108,7 +108,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         Set font size for y-axes and x-axis labels as well as ticks. 
     likert : bool, default False
         Set to indicate that plotted data come from a 7-point Likert scale. This will insert appropriate y-tick labels.
-
+    linewidth : int, default None
+        Set width of error bar lines. Defaults to 1
     Usage
     -----
     > # Generate fake data
@@ -165,6 +166,9 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         font_size = 16
     if markeredgewidth is None:
         markeredgewidth = 1
+    if linewidth is None:
+        linewidth = 1
+
     # x-axis spacing [a, raw a, space, raw b, b]
     x_spacing = [0.05, 0.1, 0.3, 0.35, 0.45]
 
@@ -218,13 +222,13 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
 
     # Plot mean [error_bar] for data a and b
     ax.plot([x_spacing[0], x_spacing[0]], [a_error_min, a_error_max],
-            linestyle='-',color=style['a'][2], linewidth=2)
+            linestyle='-',color=style['a'][2], linewidth=linewidth)
     ax.plot(x_spacing[0], a_mean, marker=style['a'][0], color=style['a'][1],
             markeredgecolor=style['a'][2],  markersize=marker_size[1],
             markeredgewidth=markeredgewidth)
 
     ax.plot([x_spacing[3], x_spacing[3]], [b_error_min, b_error_max],
-            linestyle='-',color=style['b'][2], linewidth=2)
+            linestyle='-',color=style['b'][2], linewidth=linewidth)
     ax.plot(x_spacing[3], b_mean, marker=style['b'][0], color=style['b'][1],
             markeredgecolor=style['b'][2],  markersize=marker_size[1],
             markeredgewidth=markeredgewidth)
@@ -267,7 +271,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     y1 = dif_mean - dif_95
     y2 = dif_mean + dif_95
     ax2.plot([dif_x, dif_x], [a_mean + y1, a_mean + y2],
-             linestyle='-',color=style['diff'][2], linewidth=2)
+             linestyle='-',color=style['diff'][2], linewidth=linewidth)
     ax2.plot(dif_x, a_mean + dif_mean, marker=style['diff'][0], color=style['diff'][1],
              markeredgecolor=style['diff'][2],  markersize=marker_size[1],
              markeredgewidth=markeredgewidth)
