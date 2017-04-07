@@ -211,14 +211,22 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax2.tick_params(width=axes_tick_width, axis='y', colors=style['diff'][1])
     # Calculate differences [b-a]
     BA_dif = data[1] - data[0]
-    # Plot difference values
-    jit = 0
-    for val in BA_dif:
-        ax2.plot(x_spacing[4] + jit, a_mean + val, style['diff'][0],
-                 markeredgecolor=style['diff'][1],  markersize=marker_size[0])
-        jit += dif_jit
+
+    # Calculate jitter for differences
+    data_diff = [[], []]
+    data_diff[0] = pd.Series(BA_dif)
+    data_diff[1] = pd.Series(BA_dif)
+    jitter_diff, temp = _jitter(data, ab_jit)
+
+    # Plot raw data points for differences
+    ones = np.ones(len(data_diff[0]))
+    x_val_diff = ones * x_spacing[4] + jitter_diff
+    ax.plot(x_val_diff, data[0], style['diff'][0],
+            markeredgecolor=style['diff'][1], markersize=marker_size[0])
+
     # Calculate x-value where to plot mean [95% CI]
-    dif_x = x_spacing[4] + jit + (x_spacing[3] - x_spacing[2])
+    dif_x = x_spacing[4] + max(jitter_diff) + (x_spacing[3] - x_spacing[2])
+
     # Calculate and plot mean [95% CI] for difference
     dif_mean = BA_dif.mean()
     dif_95 = BA_dif.sem() * 1.96
