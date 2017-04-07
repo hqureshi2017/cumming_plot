@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 
 
 def _jitter(data, jit=None):
@@ -69,7 +68,7 @@ def _jitter(data, jit=None):
 def paired(data, ax, ab_errors='95%CI', yticks='default',
           dif_jit=None, ab_jit=None, style=None, ylabel=None,
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
-           axes_tick_width=2, marker_size=[5, 10], font_size=16, likert=False):
+           axes_tick_width=None, marker_size=None, font_size=None, likert=False):
 
     """
     Parameters
@@ -99,6 +98,12 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         Set y-axis label. Default is to not have a label.
     y2ticks : bool, default False
         Set to add numerical values to right y-axis. Default is to not have any values.
+    axes_tick_width : int, default None
+        Set width of y-axes lines and ticks. Defaults to 2.
+    marker_size : list, default None 
+        Set size of raw data and mean values. Defaults to [5, 10] for [raw, mean]
+    font_size : int, default None
+        Set font size for y-axes and x-axis labels as well as ticks. 
     likert : bool, default False
         Set to indicate that plotted data come from a 7-point Likert scale. This will insert appropriate y-tick labels.
 
@@ -142,9 +147,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     > plt.show()
 
     """
-    data[0] = pd.Series(data[0])
-    data[1] = pd.Series(data[1])
 
+    # Verify default values
     if ab_jit is None:
         ab_jit = 0.005
     if dif_jit is None:
@@ -153,11 +157,28 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         style = {'a': ['wo', 'k'],
                  'b': ['ko', 'k'],
                  'diff': ['k^', 'k']}
+    if axes_tick_width is None:
+        axes_tick_width = 2
+    if marker_size is None:
+        marker_size = [5,10]
+    if font_size is None:
+        font_size = 16
 
     # x-axis spacing [a, raw a, space, raw b, b]
     x_spacing = [0.05, 0.1, 0.3, 0.35, 0.45]
+
+    #######################
+    # PLOTTING DATA A AND B
+    #######################
+
+    # Convert data to pandas series
+    data[0] = pd.Series(data[0])
+    data[1] = pd.Series(data[1])
+
+    # Calculate jitter to add to raw data a and b
     jitter_a, jitter_b = _jitter(data, ab_jit)
 
+    # Plot zero line across data a and b
     if zero_line:
         x_val = [0, x_spacing[3] + (x_spacing[3] - x_spacing[2]) / 2]
         ax.plot(x_val, [0, 0], '--k')
@@ -205,10 +226,17 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
 
     # Set width of ticks for y-axis
     ax.tick_params(width=axes_tick_width, axis='y', colors='k')
+
+    ##########################
+    # PLOTTING DIFFERENCE DATA
+    # ########################
+
     # Create second y-axis
     ax2 = ax.twinx()
+
     # Set with of ticks for second y-axis
     ax2.tick_params(width=axes_tick_width, axis='y', colors=style['diff'][1])
+
     # Calculate differences [b-a]
     BA_dif = data[1] - data[0]
 
@@ -236,9 +264,14 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
              '-' + style['diff'][1], linewidth=2)
     ax2.plot(dif_x, a_mean + dif_mean, style['diff'][0],
              markeredgecolor=style['diff'][1],  markersize=marker_size[1])
+
     # Plot dashed line at zero for difference (in line with mean a)
     ax2.plot([x_spacing[4] - ((x_spacing[4] - x_spacing[3]) / 2), dif_x + x_spacing[0]], [a_mean, a_mean],
              '--' + style['diff'][1])
+
+    ##############################
+    # CLEANING UP AXES, TICKS, ETC
+    ##############################
 
     # Hide unwanted axes and ticks
     ax.spines['top'].set_visible(False)
@@ -322,7 +355,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         else:
             ax2.tick_params(axis='y', labelright='off')
 
-            # Set limits for y-axis and y2-axis
+    # Set limits for y-axis and y2-axis
     if likert:
         ax.set_ylim([min_val - 1, max_val + 1])
         ax2.set_ylim([min_val - 1, max_val + 1])
