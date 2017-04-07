@@ -69,7 +69,7 @@ def _jitter(data, jit=None):
 def paired(data, ax, ab_errors='95%CI', yticks='default',
           dif_jit=None, ab_jit=None, style=None, ylabel=None,
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
-          likert=False):
+           font_size=16, likert=False):
 
     """
     Parameters
@@ -142,12 +142,6 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     > plt.show()
 
     """
-    # Set matplotlib options
-    mpl.rcParams['font.size'] = 16
-    mpl.rcParams['axes.labelsize'] = 16
-    mpl.rcParams['ytick.labelsize'] = 16
-    mpl.rcParams['xtick.labelsize'] = 16
-
     data[0] = pd.Series(data[0])
     data[1] = pd.Series(data[1])
 
@@ -244,6 +238,10 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax2.tick_params(axis='x', which='both', bottom='off',
                     top='off', labelbottom='off')
 
+    # Set font size for y-axis ticks
+    ax.tick_params(axis='y', which='both', labelsize=font_size)
+    ax2.tick_params(axis='y', which='both', labelsize=font_size)
+
     # Set axes colors
     ax.spines['right'].set_color(style['diff'][1])
     ax2.spines['right'].set_color(style['diff'][1])
@@ -256,9 +254,9 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
 
     # Set axes labels
     if ylabel is not None:
-        ax.set_ylabel(ylabel)
+        ax.set_ylabel(ylabel, fontsize=font_size)
     if y2label is not None:
-        ax2.set_ylabel(y2label)
+        ax2.set_ylabel(y2label, fontsize=font_size)
 
     # Find min and max plotted value; used to set y-axis limits/ticks
     a = np.array(data[0])
@@ -327,9 +325,9 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
             y_val = ticks[0] - ((ticks[1] - ticks[0]) / 8)
         else:
             y_val = min_val - 2
-        ax.text(x_spacing[0] - 0.01, y_val, xlabel[0], fontsize=14, va='top')
-        ax.text(x_spacing[2] - 0.01, y_val, xlabel[1], fontsize=14, va='top')
-        ax.text(x_spacing[4] + 0.02, y_val, xlabel[2], fontsize=14, va='top')
+        ax.text(x_spacing[0] - 0.01, y_val, xlabel[0], fontsize=font_size, va='top')
+        ax.text(x_spacing[2] - 0.01, y_val, xlabel[1], fontsize=font_size, va='top')
+        ax.text(x_spacing[4] + 0.02, y_val, xlabel[2], fontsize=font_size, va='top')
 
 
 def _usage():
