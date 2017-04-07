@@ -69,7 +69,7 @@ def _jitter(data, jit=None):
 def paired(data, ax, ab_errors='95%CI', yticks='default',
           dif_jit=None, ab_jit=None, style=None, ylabel=None,
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
-           marker_size=[5, 10], font_size=16, likert=False):
+           axes_tick_width=2, marker_size=[5, 10], font_size=16, likert=False):
 
     """
     Parameters
@@ -203,8 +203,12 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax.plot(x_spacing[3], b_mean, style['b'][0],
             markeredgecolor=style['b'][1],  markersize=marker_size[1])
 
+    # Set width of ticks for y-axis
+    ax.tick_params(width=axes_tick_width, axis='y', colors='k')
     # Create second y-axis
     ax2 = ax.twinx()
+    # Set with of ticks for second y-axis
+    ax2.tick_params(width=axes_tick_width, axis='y', colors=style['diff'][1])
     # Calculate differences [b-a]
     BA_dif = data[1] - data[0]
     # Plot difference values
@@ -242,11 +246,14 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax.tick_params(axis='y', which='both', labelsize=font_size)
     ax2.tick_params(axis='y', which='both', labelsize=font_size)
 
-    # Set axes colors
+    # Set axes colors and width
     ax.spines['right'].set_color(style['diff'][1])
+    ax.spines['right'].set_linewidth(axes_tick_width)
+    ax.spines['left'].set_linewidth(axes_tick_width)
     ax2.spines['right'].set_color(style['diff'][1])
+    ax.spines['right'].set_linewidth(axes_tick_width)
+    ax2.spines['left'].set_linewidth(axes_tick_width)
     ax2.yaxis.label.set_color(style['diff'][1])
-    ax2.tick_params(axis='y', colors=style['diff'][1])
 
     # Set x-axis limits
     ax.set_xlim([0, dif_x + x_spacing[0]])
