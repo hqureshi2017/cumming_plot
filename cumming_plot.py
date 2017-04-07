@@ -68,7 +68,8 @@ def _jitter(data, jit=None):
 def paired(data, ax, ab_errors='95%CI', yticks='default',
           jit=None, style=None, ylabel=None,
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
-           axes_tick_width=None, marker_size=None, font_size=None, likert=False):
+          axes_tick_width=None, marker_size=None, markeredgewidth=None,
+          font_size=None, likert=False):
 
     """
     Parameters
@@ -100,6 +101,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         Set width of y-axes lines and ticks. Defaults to 2.
     marker_size : list, default None 
         Set size of raw data and mean values. Defaults to [5, 10] for [raw, mean]
+    markeredgewidth : int, default None
+        Set width of lines used in markers. Defaults to 1.
     font_size : int, default None
         Set font size for y-axes and x-axis labels as well as ticks. 
     likert : bool, default False
@@ -159,7 +162,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         marker_size = [5,10]
     if font_size is None:
         font_size = 16
-
+    if markeredgewidth is None:
+        markeredgewidth = 1
     # x-axis spacing [a, raw a, space, raw b, b]
     x_spacing = [0.05, 0.1, 0.3, 0.35, 0.45]
 
@@ -188,12 +192,14 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ones = np.ones(len(data[0]))
     x_val_a = ones * x_spacing[1] + jitter_a
     ax.plot(x_val_a, data[0], style['a'][0],
-            markeredgecolor=style['a'][1],  markersize=marker_size[0])
+            markeredgecolor=style['a'][1],  markersize=marker_size[0],
+            markeredgewidth=markeredgewidth)
 
     # Plot raw data points for b
     x_val_b = ones * x_spacing[2] - jitter_b
     ax.plot(x_val_b, data[1], style['b'][0],
-            markeredgecolor=style['b'][1],  markersize=marker_size[0])
+            markeredgecolor=style['b'][1],  markersize=marker_size[0],
+            markeredgewidth=markeredgewidth)
 
     # Calculate mean [error_bar] for data a and b
     a_mean = data[0].mean()
@@ -213,12 +219,14 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax.plot([x_spacing[0], x_spacing[0]], [a_error_min, a_error_max],
             '-' + style['a'][1], linewidth=2)
     ax.plot(x_spacing[0], a_mean, style['a'][0],
-            markeredgecolor=style['a'][1],  markersize=marker_size[1])
+            markeredgecolor=style['a'][1],  markersize=marker_size[1],
+            markeredgewidth=markeredgewidth)
 
     ax.plot([x_spacing[3], x_spacing[3]], [b_error_min, b_error_max],
             '-' + style['b'][1], linewidth=2)
     ax.plot(x_spacing[3], b_mean, style['b'][0],
-            markeredgecolor=style['b'][1],  markersize=marker_size[1])
+            markeredgecolor=style['b'][1],  markersize=marker_size[1],
+            markeredgewidth=markeredgewidth)
 
     # Set width of ticks for y-axis
     ax.tick_params(width=axes_tick_width, axis='y', colors='k')
@@ -246,7 +254,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ones = np.ones(len(data_diff[0]))
     x_val_diff = ones * x_spacing[4] + jitter_diff
     ax2.plot(x_val_diff, a_mean + data_diff[0], style['diff'][0],
-            markeredgecolor=style['diff'][1], markersize=marker_size[0])
+            markeredgecolor=style['diff'][1], markersize=marker_size[0],
+             markeredgewidth=markeredgewidth)
 
     # Calculate x-value where to plot mean [95% CI]
     dif_x = x_spacing[4] + max(jitter_diff) + (x_spacing[3] - x_spacing[2])
@@ -259,10 +268,13 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax2.plot([dif_x, dif_x], [a_mean + y1, a_mean + y2],
              '-' + style['diff'][1], linewidth=2)
     ax2.plot(dif_x, a_mean + dif_mean, style['diff'][0],
-             markeredgecolor=style['diff'][1],  markersize=marker_size[1])
+             markeredgecolor=style['diff'][1],  markersize=marker_size[1],
+             markeredgewidth=markeredgewidth)
 
     # Plot dashed line at zero for difference (in line with mean a)
-    ax2.plot([x_spacing[4] - ((x_spacing[4] - x_spacing[3]) / 2), dif_x + x_spacing[0]], [a_mean, a_mean],
+#    ax2.plot([x_spacing[4] - ((x_spacing[4] - x_spacing[3]) / 2), dif_x + x_spacing[0]], [a_mean, a_mean],
+#             '--' + style['diff'][1])
+    ax2.plot([x_spacing[4], dif_x + x_spacing[0]], [a_mean, a_mean],
              '--' + style['diff'][1])
 
     ##############################
@@ -371,7 +383,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
             y_val = min_val - 2
         ax.text(x_spacing[0] - 0.01, y_val, xlabel[0], fontsize=font_size, va='top')
         ax.text(x_spacing[2] - 0.01, y_val, xlabel[1], fontsize=font_size, va='top')
-        ax.text(x_spacing[4] + 0.02, y_val, xlabel[2], fontsize=font_size, va='top')
+        ax.text(x_spacing[4] - 0.01, y_val, xlabel[2], fontsize=font_size, va='top')
 
 
 def _usage():
