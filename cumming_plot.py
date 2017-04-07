@@ -86,7 +86,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     jit : int, default None
         Size of the y-axis jitter for the raw a, b and diff data. Defaults to 0.005.
     style : dict, default None
-        Set marker color and shape. Defaults to {'a': ['wo', 'k'], 'b': ['ko', 'k'],'diff': ['k^', 'k']}.
+        Set marker color and shape. Defaults to {'a': ['o', 'w', 'k'], 'b': ['o', 'k', 'k'],'diff': ['^', 'k', 'k']}.
+        'a':[marker, markerfacecolor, markeredgecolor]
     ylabel : str, default None
         Set y-axis label. Default is to not have a label.
     xlabel : list, default None
@@ -127,7 +128,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     > # Complex plot
     > ab_errors = 'SD'
     > yticks = [-10, 30, 10]
-    > style = {'a': ['r*', 'k'], 'b':['yo', 'g'], 'diff': ['w^', 'm']}
+    > style = {'a': ['*', 'r' 'k'], 'b':['o', 'y', 'g'], 'diff': ['w', '^', 'm']}
     > ylabel = 'y label'
     > xlabel = ['start', 'end', 'dif']
     > zero_line = True
@@ -153,9 +154,9 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     if jit is None:
         jit = 0.005
     if style is None:
-        style = {'a': ['wo', 'k'],
-                 'b': ['ko', 'k'],
-                 'diff': ['k^', 'k']}
+        style = {'a': ['o', 'w', 'k'],
+                 'b': ['o', 'k', 'k'],
+                 'diff': ['^', 'k', 'k']}
     if axes_tick_width is None:
         axes_tick_width = 2
     if marker_size is None:
@@ -191,15 +192,15 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     # Plot raw data points for a
     ones = np.ones(len(data[0]))
     x_val_a = ones * x_spacing[1] + jitter_a
-    ax.plot(x_val_a, data[0], style['a'][0],
-            markeredgecolor=style['a'][1],  markersize=marker_size[0],
-            markeredgewidth=markeredgewidth)
+    ax.plot(x_val_a, data[0], marker=style['a'][0], color=style['a'][1],
+            markeredgecolor=style['a'][2],  markersize=marker_size[0],
+            markeredgewidth=markeredgewidth, linestyle='None')
 
     # Plot raw data points for b
     x_val_b = ones * x_spacing[2] - jitter_b
-    ax.plot(x_val_b, data[1], style['b'][0],
-            markeredgecolor=style['b'][1],  markersize=marker_size[0],
-            markeredgewidth=markeredgewidth)
+    ax.plot(x_val_b, data[1], marker=style['b'][0], color=style['b'][1],
+            markeredgecolor=style['b'][2],  markersize=marker_size[0],
+            markeredgewidth=markeredgewidth, linestyle='None')
 
     # Calculate mean [error_bar] for data a and b
     a_mean = data[0].mean()
@@ -217,15 +218,15 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
 
     # Plot mean [error_bar] for data a and b
     ax.plot([x_spacing[0], x_spacing[0]], [a_error_min, a_error_max],
-            '-' + style['a'][1], linewidth=2)
-    ax.plot(x_spacing[0], a_mean, style['a'][0],
-            markeredgecolor=style['a'][1],  markersize=marker_size[1],
+            linestyle='-',color=style['a'][2], linewidth=2)
+    ax.plot(x_spacing[0], a_mean, marker=style['a'][0], color=style['a'][1],
+            markeredgecolor=style['a'][2],  markersize=marker_size[1],
             markeredgewidth=markeredgewidth)
 
     ax.plot([x_spacing[3], x_spacing[3]], [b_error_min, b_error_max],
-            '-' + style['b'][1], linewidth=2)
-    ax.plot(x_spacing[3], b_mean, style['b'][0],
-            markeredgecolor=style['b'][1],  markersize=marker_size[1],
+            linestyle='-',color=style['b'][2], linewidth=2)
+    ax.plot(x_spacing[3], b_mean, marker=style['b'][0], color=style['b'][1],
+            markeredgecolor=style['b'][2],  markersize=marker_size[1],
             markeredgewidth=markeredgewidth)
 
     # Set width of ticks for y-axis
@@ -239,7 +240,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax2 = ax.twinx()
 
     # Set with of ticks for second y-axis
-    ax2.tick_params(width=axes_tick_width, axis='y', colors=style['diff'][1])
+    ax2.tick_params(width=axes_tick_width, axis='y', colors=style['diff'][2])
 
     # Calculate differences [b-a]
     BA_dif = data[1] - data[0]
@@ -253,9 +254,9 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     # Plot raw data points for differences
     ones = np.ones(len(data_diff[0]))
     x_val_diff = ones * x_spacing[4] + jitter_diff
-    ax2.plot(x_val_diff, a_mean + data_diff[0], style['diff'][0],
-            markeredgecolor=style['diff'][1], markersize=marker_size[0],
-             markeredgewidth=markeredgewidth)
+    ax2.plot(x_val_diff, a_mean + data_diff[0], marker=style['diff'][0], color=style['diff'][1],
+            markeredgecolor=style['diff'][2], markersize=marker_size[0],
+             markeredgewidth=markeredgewidth, linestyle='None')
 
     # Calculate x-value where to plot mean [95% CI]
     dif_x = x_spacing[4] + max(jitter_diff) + (x_spacing[3] - x_spacing[2])
@@ -266,16 +267,12 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     y1 = dif_mean - dif_95
     y2 = dif_mean + dif_95
     ax2.plot([dif_x, dif_x], [a_mean + y1, a_mean + y2],
-             '-' + style['diff'][1], linewidth=2)
-    ax2.plot(dif_x, a_mean + dif_mean, style['diff'][0],
-             markeredgecolor=style['diff'][1],  markersize=marker_size[1],
+             linestyle='-',color=style['diff'][2], linewidth=2)
+    ax2.plot(dif_x, a_mean + dif_mean, marker=style['diff'][0], color=style['diff'][1],
+             markeredgecolor=style['diff'][2],  markersize=marker_size[1],
              markeredgewidth=markeredgewidth)
 
-    # Plot dashed line at zero for difference (in line with mean a)
-#    ax2.plot([x_spacing[4] - ((x_spacing[4] - x_spacing[3]) / 2), dif_x + x_spacing[0]], [a_mean, a_mean],
-#             '--' + style['diff'][1])
-    ax2.plot([x_spacing[4], dif_x + x_spacing[0]], [a_mean, a_mean],
-             '--' + style['diff'][1])
+    ax2.plot([x_spacing[4], dif_x + x_spacing[0]], [a_mean, a_mean], '--' + style['diff'][2])
 
     ##############################
     # CLEANING UP AXES, TICKS, ETC
@@ -296,13 +293,13 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     ax2.tick_params(axis='y', which='both', labelsize=font_size)
 
     # Set axes colors and width
-    ax.spines['right'].set_color(style['diff'][1])
+    ax.spines['right'].set_color(style['diff'][2])
     ax.spines['right'].set_linewidth(axes_tick_width)
     ax.spines['left'].set_linewidth(axes_tick_width)
-    ax2.spines['right'].set_color(style['diff'][1])
+    ax2.spines['right'].set_color(style['diff'][2])
     ax.spines['right'].set_linewidth(axes_tick_width)
     ax2.spines['left'].set_linewidth(axes_tick_width)
-    ax2.yaxis.label.set_color(style['diff'][1])
+    ax2.yaxis.label.set_color(style['diff'][2])
 
     # Set x-axis limits
     ax.set_xlim([0, dif_x + x_spacing[0]])
@@ -440,7 +437,7 @@ def _examples_paired():
     # COMPLEX EXAMPLE
     ab_errors='SD'
     yticks = [-10, 30, 10]
-    style = {'a': ['r*', 'k'], 'b': ['yo', 'g'], 'diff': ['w^', 'm']}
+    style = {'a': ['*', 'r', 'k'], 'b': ['o','y', 'g'], 'diff': ['^', 'w', 'm']}
     ylabel = 'y label'
     xlabel = ['a', 'b', 'diff']
     zero_line = True
@@ -474,14 +471,14 @@ def _examples_paired():
     #############################
     # CRAZY EXAMPLE WITH SUBPLOTS
     #############################
-    style1 = {'a': ['bo', 'b'], 'b': ['ro', 'r'], 'diff': ['g^', 'g']}
-    style2 = {'a': ['b8', 'm'], 'b': ['yd', 'r'], 'diff': ['cp', 'k']}
-    style3 = {'a': ['g*', 'k'], 'b': ['y*', 'b'], 'diff': ['cv', 'm']}
-    style4 = {'a': ['rh', 'b'], 'b': ['mp', 'b'], 'diff': ['sk', 'y']}
-    style5 = {'a': ['ko', 'b'], 'b': ['bo', 'r'], 'diff': ['gs', 'b']}
-    style6 = {'a': ['y+', 'g'], 'b': ['kd', 'k'], 'diff': ['mx', 'b']}
-    style7 = {'a': ['g^', 'r'], 'b': ['m*', 'r'], 'diff': ['r<', 'k']}
-    style8 = {'a': ['mo', 'c'], 'b': ['cp', 'b'], 'diff': ['y>', 'm']}
+    style1 = {'a': ['o', 'b', 'b'], 'b': ['o', 'r', 'r'], 'diff': ['^', 'g', 'g']}
+    style2 = {'a': ['8', 'b', 'm'], 'b': ['d', 'y', 'r'], 'diff': ['p', 'c', 'k']}
+    style3 = {'a': ['*', 'g', 'k'], 'b': ['*', 'y', 'b'], 'diff': ['v', 'c', 'm']}
+    style4 = {'a': ['h', 'r', 'b'], 'b': ['p', 'm', 'b'], 'diff': ['k', 's', 'y']}
+    style5 = {'a': ['o', 'k', 'b'], 'b': ['o', 'b', 'r'], 'diff': ['s', 'g', 'b']}
+    style6 = {'a': ['+', 'y', 'g'], 'b': ['d', 'k', 'k'], 'diff': ['x', 'm', 'b']}
+    style7 = {'a': ['^', 'g', 'r'], 'b': ['*', 'm', 'r'], 'diff': ['<', 'r', 'k']}
+    style8 = {'a': ['o', 'm', 'c'], 'b': ['p', 'c', 'b'], 'diff': ['>', 'y', 'm']}
 
     styles = [style1, style2, style3, style4, style5, style6, style7, style8]
 
