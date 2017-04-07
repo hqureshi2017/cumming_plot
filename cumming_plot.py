@@ -191,12 +191,12 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     # Plot zero line across data a and b
     if zero_line:
         x_val = [0, x_spacing[3] + (x_spacing[3] - x_spacing[2]) / 2]
-        ax.plot(x_val, [0, 0], '--k')
+        ax.plot(x_val, [0, 0], linestyle='--', color='k', linewidth=linewidth)
 
     # Plot lines connecting paired points
     for a, b, j_a, j_b in zip(data[0], data[1], jitter_a, jitter_b):
         x_val = [x_spacing[1] + j_a, x_spacing[2] - j_b]
-        ax.plot(x_val, [a, b], '-', color=connectcolor)
+        ax.plot(x_val, [a, b], '-', color=connectcolor, linewidth=linewidth)
 
     # Plot raw data points for a
     ones = np.ones(len(data[0]))
@@ -281,7 +281,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
              markeredgecolor=style['diff'][2],  markersize=marker_size[1],
              markeredgewidth=markeredgewidth)
 
-    ax2.plot([x_spacing[4], dif_x + x_spacing[0]], [a_mean, a_mean], '--' + style['diff'][2])
+    ax2.plot([x_spacing[4], dif_x + x_spacing[0]], [a_mean, a_mean], linestyle='--', color=style['diff'][2], linewidth=linewidth)
 
     ##############################
     # CLEANING UP AXES, TICKS, ETC
