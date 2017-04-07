@@ -70,7 +70,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
           axes_tick_width=None, marker_size=None, markeredgewidth=None,
           font_size=None, likert=False, linewidth=None,
-           connectcolor=None):
+           connectcolor=None, x_spacing=None, skip_raw_marker=False):
 
     """
     Parameters
@@ -113,7 +113,12 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         Set width of error bar lines. Defaults to 1
     connectcolor : str, default None
         Set color of line connect raw data points from a and b. Defaults to light grey ('0.8')
-        
+    x_spacing : list, default None
+        Set x-axis location of plotted data. Defaults to 
+                                            [a,  raw a, space, raw b, b]
+                                            [0.05, 0.1, 0.3, 0.35, 0.45]
+    skip_raw_marker : bool. Defaults to False
+        Select whether to plot marker for raw data
     Usage
     -----
     > # Generate fake data
@@ -174,8 +179,11 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         linewidth = 1
     if connectcolor is None:
         connectcolor = '0.8'
-    # x-axis spacing [a, raw a, space, raw b, b]
-    x_spacing = [0.05, 0.1, 0.3, 0.35, 0.45]
+    # x-axis spacing [a, raw a, raw b, b, raw diff]
+    if x_spacing is None:
+        x_spacing = [0.05, 0.1, 0.3, 0.35, 0.45]
+
+
 
     #######################
     # PLOTTING DATA A AND B
@@ -198,18 +206,19 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         x_val = [x_spacing[1] + j_a, x_spacing[2] - j_b]
         ax.plot(x_val, [a, b], '-', color=connectcolor, linewidth=linewidth)
 
-    # Plot raw data points for a
-    ones = np.ones(len(data[0]))
-    x_val_a = ones * x_spacing[1] + jitter_a
-    ax.plot(x_val_a, data[0], marker=style['a'][0], color=style['a'][1],
-            markeredgecolor=style['a'][2],  markersize=marker_size[0],
-            markeredgewidth=markeredgewidth, linestyle='None')
+    if not skip_raw_marker:
+        # Plot raw data points for a
+        ones = np.ones(len(data[0]))
+        x_val_a = ones * x_spacing[1] + jitter_a
+        ax.plot(x_val_a, data[0], marker=style['a'][0], color=style['a'][1],
+                markeredgecolor=style['a'][2],  markersize=marker_size[0],
+                markeredgewidth=markeredgewidth, linestyle='None')
 
-    # Plot raw data points for b
-    x_val_b = ones * x_spacing[2] - jitter_b
-    ax.plot(x_val_b, data[1], marker=style['b'][0], color=style['b'][1],
-            markeredgecolor=style['b'][2],  markersize=marker_size[0],
-            markeredgewidth=markeredgewidth, linestyle='None')
+        # Plot raw data points for b
+        x_val_b = ones * x_spacing[2] - jitter_b
+        ax.plot(x_val_b, data[1], marker=style['b'][0], color=style['b'][1],
+                markeredgecolor=style['b'][2],  markersize=marker_size[0],
+                markeredgewidth=markeredgewidth, linestyle='None')
 
     # Calculate mean [error_bar] for data a and b
     a_mean = data[0].mean()
@@ -388,8 +397,10 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
             y_val = ticks[0] - ((ticks[1] - ticks[0]) / 8)
         else:
             y_val = min_val - 2
-        ax.text(x_spacing[0] - 0.01, y_val, xlabel[0], fontsize=font_size, va='top')
-        ax.text(x_spacing[2] - 0.02, y_val, xlabel[1], fontsize=font_size, va='top')
+        ax.text(x_spacing[0] - 0.025, y_val, xlabel[0], fontsize=font_size,
+                va='top')
+        ax.text(x_spacing[2] - 0.025, y_val, xlabel[1], fontsize=font_size,
+                va='top')
         ax.text(x_spacing[4] - 0.01, y_val, xlabel[2], fontsize=font_size, va='top')
 
 
