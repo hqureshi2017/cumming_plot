@@ -70,7 +70,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
           axes_tick_width=None, marker_size=None, markeredgewidth=None,
           font_size=None, likert=False, linewidth=None,
-           connectcolor=None, x_spacing=None, skip_raw_marker=False):
+           connectcolor=None, x_spacing=None, skip_raw_marker=False,
+           x_axis_nudge=None, zero_line2=None):
 
     """
     Parameters
@@ -119,6 +120,9 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
                                             [0.05, 0.1, 0.3, 0.35, 0.45]
     skip_raw_marker : bool. Defaults to False
         Select whether to plot marker for raw data
+    zero_line2 : bool, Defaults to True    
+        Select whether to show line at zero for diff data
+        
     Usage
     -----
     > # Generate fake data
@@ -182,7 +186,10 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     # x-axis spacing [a, raw a, raw b, b, raw diff]
     if x_spacing is None:
         x_spacing = [0.05, 0.1, 0.3, 0.35, 0.45]
-
+    if x_axis_nudge is None:
+        x_axis_nudge = [-0.2, -0.2, -0.1]
+    if zero_line2 is None:
+        zero_line2 = True
 
 
     #######################
@@ -199,7 +206,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     # Plot zero line across data a and b
     if zero_line:
         x_val = [0, x_spacing[3] + (x_spacing[3] - x_spacing[2]) / 2]
-        ax.plot(x_val, [0, 0], linestyle='--', color='k', linewidth=linewidth)
+        ax.plot(x_val, [0, 0], linestyle='-', color='k', linewidth=linewidth)
 
     # Plot lines connecting paired points
     for a, b, j_a, j_b in zip(data[0], data[1], jitter_a, jitter_b):
@@ -290,7 +297,10 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
              markeredgecolor=style['diff'][2],  markersize=marker_size[1],
              markeredgewidth=markeredgewidth)
 
-    ax2.plot([x_spacing[4], dif_x + x_spacing[0]], [a_mean, a_mean], linestyle='--', color=style['diff'][2], linewidth=linewidth)
+    if zero_line2:
+        ax2.plot([x_spacing[4], dif_x + x_spacing[0]],
+                 [a_mean, a_mean], linestyle='-', color=style['diff'][2],
+                 linewidth=linewidth)
 
     ##############################
     # CLEANING UP AXES, TICKS, ETC
@@ -397,11 +407,12 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
             y_val = ticks[0] - ((ticks[1] - ticks[0]) / 8)
         else:
             y_val = min_val - 2
-        ax.text(x_spacing[0] - 0.025, y_val, xlabel[0], fontsize=font_size,
-                va='top')
-        ax.text(x_spacing[2] - 0.025, y_val, xlabel[1], fontsize=font_size,
-                va='top')
-        ax.text(x_spacing[4] - 0.01, y_val, xlabel[2], fontsize=font_size, va='top')
+        ax.text(x_spacing[0] + x_axis_nudge[0], y_val, xlabel[0],
+                fontsize=font_size, va='top')
+        ax.text(x_spacing[2] + x_axis_nudge[1], y_val, xlabel[1],
+                fontsize=font_size, va='top')
+        ax.text(x_spacing[4] + x_axis_nudge[2], y_val, xlabel[2],
+                fontsize=font_size, va='top')
 
 
 def _usage():
