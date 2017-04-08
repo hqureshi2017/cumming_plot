@@ -69,7 +69,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
           jit=None, style=None, ylabel=None,
           xlabel=None, zero_line=False, y2label=None, y2ticks=False,
           axes_tick_width=None, marker_size=None, markeredgewidth=None,
-          font_size=None, likert=False, linewidth=None,
+          font_size=None, likert=False, likert_items=None, linewidth=None,
            connectcolor=None, x_spacing=None, skip_raw_marker=False,
            x_axis_nudge=None, zero_line2=None):
 
@@ -110,6 +110,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         Set font size for y-axes and x-axis labels as well as ticks. 
     likert : bool, default False
         Set to indicate that plotted data come from a 7-point Likert scale. This will insert appropriate y-tick labels.
+    likert_items : list, defaults to numbers & text
+        Set text that appears for the 7 items of the likert scale (from 1-7)
     linewidth : int, default None
         Set width of error bar lines. Defaults to 1
     connectcolor : str, default None
@@ -190,7 +192,10 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         x_axis_nudge = [-0.2, -0.2, -0.1]
     if zero_line2 is None:
         zero_line2 = True
-
+    if likert_items is None:
+        likert_items = ['(1) st. disagree', '(2) disagree',
+                            '(3) som. disagree', '(4) neutral',
+                            '(5) som. agree', '(6) agree', '(7) st. agree']
 
     #######################
     # PLOTTING DATA A AND B
@@ -350,9 +355,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     # Set y-axis tick range and spacing if set by user
     if likert:
         ax.set_yticks([1, 2, 3, 4, 5, 6, 7])
-        ax.set_yticklabels(['(1) st. disagree', '(2) disagree',
-                            '(3) som. disagree', '(4) neutral',
-                            '(5) som. agree', '(6) agree', '(7) st. agree'])
+        ax.set_yticklabels(likert_items)
     else:
         if yticks != 'default':
             ytick_vals = np.arange(yticks[0], yticks[1] + 1, yticks[2])
