@@ -5,12 +5,18 @@ Please refer to [Understanding the New Statistics][1] and [Introduction to the N
 a more details.
 
 Version 1.0 [![DOI](https://zenodo.org/badge/80242479.svg)](https://zenodo.org/badge/latestdoi/80242479)
+Version 1.1 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.557127.svg)](https://doi.org/10.5281/zenodo.557127)
 
 Citation
 --
 If this code was used to prepare figures for publications, presentations, books, etc., please cite this code as:
 
+**Version 1.0**
 Héroux ME (2017). Cumming plot (paired data) for Python. DOI: 10.5281/zenodo.265186. 
+
+**Version 1.1**
+Héroux ME (2017). Cumming plot (paired data) for Python. DOI: 10.5281/zenodo.557127. 
+
 
 Description
 --
