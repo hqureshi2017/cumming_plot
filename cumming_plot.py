@@ -71,7 +71,7 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
           axes_tick_width=None, marker_size=None, markeredgewidth=None,
           font_size=None, likert=False, likert_items=None, linewidth=None,
            connectcolor=None, x_spacing=None, skip_raw_marker=False,
-           x_axis_nudge=None, zero_line2=None):
+           x_axis_nudge=None, zero_line2=None, connecting_line=True):
 
     """
     Parameters
@@ -124,6 +124,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
         Select whether to plot marker for raw data
     zero_line2 : bool, Defaults to True    
         Select whether to show line at zero for diff data
+    connecting_line : bool. Default to True
+        Select whether to plot black line between mean a and b
         
     Usage
     -----
@@ -246,15 +248,21 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     b_error_min = b_mean - b_error
     b_error_max = b_mean + b_error
 
-    # Plot mean [error_bar] for data a and b
+    # Plot error_bars for data a and b
     ax.plot([x_spacing[0], x_spacing[0]], [a_error_min, a_error_max],
             linestyle='-',color=style['a'][2], linewidth=linewidth)
-    ax.plot(x_spacing[0], a_mean, marker=style['a'][0], color=style['a'][1],
-            markeredgecolor=style['a'][2],  markersize=marker_size[1],
-            markeredgewidth=markeredgewidth)
-
     ax.plot([x_spacing[3], x_spacing[3]], [b_error_min, b_error_max],
             linestyle='-',color=style['b'][2], linewidth=linewidth)
+
+    # Plot connecting line for data a and b
+    if connecting_line:
+        ax.plot([x_spacing[0],x_spacing[3]], [a_mean, b_mean],
+                linestyle='-', color='k''', linewidth=linewidth)
+
+    # Plot mean for data a and b
+    ax.plot(x_spacing[0], a_mean, marker=style['a'][0], color=style['a'][1],
+            markeredgecolor=style['a'][2], markersize=marker_size[1],
+            markeredgewidth=markeredgewidth)
     ax.plot(x_spacing[3], b_mean, marker=style['b'][0], color=style['b'][1],
             markeredgecolor=style['b'][2],  markersize=marker_size[1],
             markeredgewidth=markeredgewidth)
