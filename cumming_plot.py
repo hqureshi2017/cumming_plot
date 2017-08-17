@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import t
 
 
 def _jitter(data, jit=None):
@@ -238,8 +239,9 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
     a_mean = data[0].mean()
     b_mean = data[1].mean()
     if ab_errors == '95%CI':
-        a_error = data[0].sem() * 1.96
-        b_error = data[1].sem() * 1.96
+        t_val = t.ppf([0.975], len(data[0]))
+        a_error = data[0].sem() * t_val
+        b_error = data[1].sem() * t_val
     elif ab_errors == 'SD':
         a_error = data[0].std()
         b_error = data[1].std()
@@ -301,7 +303,8 @@ def paired(data, ax, ab_errors='95%CI', yticks='default',
 
     # Calculate and plot mean [95% CI] for difference
     dif_mean = BA_dif.mean()
-    dif_95 = BA_dif.sem() * 1.96
+    t_val = t.ppf([0.975], len(data[0]))
+    dif_95 = BA_dif.sem() *  t_val
     y1 = dif_mean - dif_95
     y2 = dif_mean + dif_95
     ax2.plot([dif_x, dif_x], [a_mean + y1, a_mean + y2],
